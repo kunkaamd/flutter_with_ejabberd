@@ -1,0 +1,11 @@
+# FROM mysql:5.7.41
+# ENV MYSQL_ROOT_PASSWORD=locdeptrai
+# ENV MYSQL_DATABASE=ejabberd
+# ENV MYSQL_USER=ejabberd
+# ENV MYSQL_PASSWORD=loccute
+
+# RUN yum update && yum install -y wget
+
+# RUN wget https://raw.githubusercontent.com/processone/ejabberd/master/sql/mysql.sql
+# RUN mysql -h ejabberd-mysql start
+# RUN mysql -h ejabberd-mysql -D ejabberd -u ejabberd --password=loccute < mysql.sql

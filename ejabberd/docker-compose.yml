@@ -1,0 +1,44 @@
+version: '1.0'
+services:
+  mysql:
+    image: mysql:5.7.41
+    container_name: ejabberd-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: locdeptrai
+      MYSQL_DATABASE: ejabberd
+      MYSQL_USER: ejabberd
+      MYSQL_PASSWORD: loccute
+
+  ejabberd-ecs-server:
+    build:
+      context: .
+    container_name: ejabberd
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 5222:5222 #The default port for XMPP clients.
+      - 5280:5280 #For admin interface.
+      - 5443:5443 #With encryption, used for admin interface, API, CAPTCHA, OAuth, Websockets and XMPP BOSH.
+      - 5269:5269 #For XMPP federation. Only needed if you want to communicate with users on other servers.
+      # - 9229:9229 #debug port
+    volumes:
+      - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
+      - ./server.pem:/home/ejabberd/conf/server.pem
+      - ./cacert.pem:/home/ejabberd/conf/cacert.pem
+      # - ./database:/home/ejabberd/database
+    environment:
+      - CTL_ON_CREATE=register admin localhost 123456 #username: admin@localhost pass:123456
+
+
+# Register the administrator account
+# The default ejabberd configuration has already granted admin privilege to an account that would be called admin@localhost, so you just need to register such an account to start using it for administrative purposes. You can register this account using the ejabberdctl script, for example:
+
+# docker exec -it ejabberd bin/ejabberdctl register admin localhost passw0rd
+
+# 
